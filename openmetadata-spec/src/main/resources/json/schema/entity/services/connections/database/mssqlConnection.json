@@ -72,7 +72,7 @@
       "items": {
         "type": "string"
       },
-      "default": ["^master$"]
+      "default": ["^msdb$", "^model$", "^tempdb$"]
     },
     "defaultExcludeSchemas": {
       "title": "Exclude Default Schemas",
@@ -81,16 +81,7 @@
       "items": {
         "type": "string"
       },
-      "default": ["^db_.*", "^dbo$", "^guest$"]
-    },
-    "defaultExcludeTables": {
-      "title": "Exclude Default Tables",
-      "description": "List of default tables to exclude in ingestion.",
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": ["sys.*"]
+      "default": ["^db_.*", "^guest$", "^information_schema$", "^sys$"]
     },
     "connectionOptions": {
       "title": "Connection Options",

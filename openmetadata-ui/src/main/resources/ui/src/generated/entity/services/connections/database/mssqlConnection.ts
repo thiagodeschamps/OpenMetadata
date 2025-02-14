@@ -31,10 +31,6 @@ export interface MssqlConnection {
      */
     defaultExcludeSchemas?: string[];
     /**
-     * List of default tables to exclude in ingestion.
-     */
-    defaultExcludeTables?: string[];
-    /**
      * ODBC driver version in case of pyodbc connection.
      */
     driver?: string;
