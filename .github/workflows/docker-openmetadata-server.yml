@@ -44,7 +44,7 @@ jobs:
 
       - name: Build OpenMetadata Server Application
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           mvn -DskipTests clean package
 
@@ -63,7 +63,7 @@ jobs:
 
       - name: Fetch Release Data
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         id: attach_release
         run: |
           echo "UPLOAD_URL=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/open-metadata/OpenMetadata/releases/tags/${{ inputs.DOCKER_RELEASE_TAG }}-release | jq .upload_url | tr -d '"' )" >> $GITHUB_OUTPUT
@@ -76,7 +76,7 @@ jobs:
       - name: Upload app to release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         with:
           asset_path: ./openmetadata-${{ inputs.DOCKER_RELEASE_TAG }}.tar.gz
           upload_url: ${{ steps.attach_release.outputs.UPLOAD_URL }}
