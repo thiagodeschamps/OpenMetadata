@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openmetadata-binary
-          path: /home/runner/work/OpenMetadata/OpenMetadata/openmetadata-dist/target/*.tar.gz
+          path: /home/runner/work/thiagodeschamps/OpenMetadata/openmetadata-dist/target/*.tar.gz
 
   release-project-event-workflow_dispatch:
     if: github.event_name == 'workflow_dispatch'
