@@ -77,9 +77,6 @@ jobs:
           fi
 
           echo "UPLOAD_URL=$UPLOAD_URL" >> $GITHUB_ENV
-          
-      - name: Debug Upload URL
-        run: echo "Upload URL: $UPLOAD_URL"
 
       - name: Download application from Artifact
         uses: actions/download-artifact@v4
