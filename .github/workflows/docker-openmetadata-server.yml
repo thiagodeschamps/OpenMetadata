@@ -44,7 +44,7 @@ jobs:
 
       - name: Build OpenMetadata Server Application
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           mvn -DskipTests clean package
 
@@ -62,21 +62,34 @@ jobs:
     steps:
 
       - name: Fetch Release Data
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: attach_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          echo "UPLOAD_URL=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/open-metadata/OpenMetadata/releases/tags/${{ inputs.DOCKER_RELEASE_TAG }}-release | jq .upload_url | tr -d '"' )" >> $GITHUB_OUTPUT
+          UPLOAD_URL=$(curl -s -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/thiagodeschamps/OpenMetadata/releases/tags/${{ inputs.docker_release_tag }}-release | jq -r .upload_url)
+
+          if [ "$UPLOAD_URL" == "null" ] || [ -z "$UPLOAD_URL" ]; then
+            echo "Error: Failed to fetch upload URL. Check if the release exists for tag ${{ inputs.docker_release_tag }}."
+            exit 1
+          fi
+
+          echo "UPLOAD_URL=$UPLOAD_URL" >> $GITHUB_ENV
 
       - name: Download application from Artifact
         uses: actions/download-artifact@v4
         with:
           name: openmetadata-binary
-
+      
+      - name: Debug downloaded files
+        run: ls -R
+        
       - name: Upload app to release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         with:
           asset_path: ./openmetadata-${{ inputs.DOCKER_RELEASE_TAG }}.tar.gz
           upload_url: ${{ steps.attach_release.outputs.UPLOAD_URL }}
